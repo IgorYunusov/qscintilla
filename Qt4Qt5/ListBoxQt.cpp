@@ -212,8 +212,10 @@ void QsciListBoxQt::GetValue(int n, char *value, int len)
 
         while (slen-- && len--)
         {
+#ifndef FASTO
             if (trim_selection && *s == ' ')
                 break;
+#endif
 
             *value++ = *s++;
         }
