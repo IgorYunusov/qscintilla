@@ -2,70 +2,94 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 CMAKE_POLICY(SET CMP0048 OLD)
 PROJECT(qscintilla2)
 
+FUNCTION(INSTALL_FILES_HIERARCHY)
+  SET(options OPTIONAL)
+  SET(multiValueArgs FILES)
+  SET(oneValueArgs DESTINATION)
+
+  CMAKE_PARSE_ARGUMENTS(INSTALL_FILES_HIERARCHY "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+  FOREACH(file ${INSTALL_FILES_HIERARCHY_FILES})
+    GET_FILENAME_COMPONENT(dir ${file} DIRECTORY)
+    INSTALL(FILES ${file} DESTINATION ${INSTALL_FILES_HIERARCHY_DESTINATION}/${dir})
+  ENDFOREACH()
+ENDFUNCTION()
+
 FIND_PACKAGE(Qt5Core REQUIRED)
-include_directories(${Qt5Core_INCLUDES})
-add_definitions(${Qt5Core_DEFINITIONS})
+INCLUDE_DIRECTORIES(${Qt5Core_INCLUDES})
+ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
 FIND_PACKAGE(Qt5Widgets REQUIRED)
-include_directories(${Qt5Widgets_INCLUDES})
-add_definitions(${Qt5Widgets_DEFINITIONS})
+INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDES})
+ADD_DEFINITIONS(${Qt5Widgets_DEFINITIONS})
 
 INCLUDE_DIRECTORIES(. ../include ../lexlib ../src)
 ADD_DEFINITIONS(-DQSCINTILLA_MAKE_DLL -DSCINTILLA_QT -DSCI_LEXER -DFASTO)
 
-set(HEADERS_TO_MOC
-    ./Qsci/qsciscintilla.h
-    ./Qsci/qsciscintillabase.h
-    ./Qsci/qsciabstractapis.h
-    ./Qsci/qsciapis.h
-    ./Qsci/qscilexer.h
-    #./Qsci/qscilexerbash.h
-    #./Qsci/qscilexerbatch.h
-    #./Qsci/qscilexercmake.h
-    #./Qsci/qscilexercpp.h
-    #./Qsci/qscilexercsharp.h
-    #./Qsci/qscilexercss.h
-    ./Qsci/qscilexercustom.h
-    #./Qsci/qscilexerd.h
-    #./Qsci/qscilexerdiff.h
-    #./Qsci/qscilexerfortran.h
-    #./Qsci/qscilexerfortran77.h
-    #./Qsci/qscilexerhtml.h
-    #./Qsci/qscilexeridl.h
-    #./Qsci/qscilexerjava.h
-    #./Qsci/qscilexerjavascript.h
-    #./Qsci/qscilexerlua.h
-    #./Qsci/qscilexermakefile.h
-    #./Qsci/qscilexermatlab.h
-    #./Qsci/qscilexeroctave.h
-    #./Qsci/qscilexerpascal.h
-    #./Qsci/qscilexerperl.h
-    #./Qsci/qscilexerpostscript.h
-    #./Qsci/qscilexerpov.h
-    #./Qsci/qscilexerproperties.h
-    #./Qsci/qscilexerpython.h
-    #./Qsci/qscilexerruby.h
-    #./Qsci/qscilexerspice.h
-    #./Qsci/qscilexersql.h
-    #./Qsci/qscilexertcl.h
-    #./Qsci/qscilexertex.h
-    #./Qsci/qscilexerverilog.h
-    #./Qsci/qscilexervhdl.h
-    #./Qsci/qscilexerxml.h
-    #./Qsci/qscilexeryaml.h
-    #./Qsci/qscimacro.h
+# If the user did not customize the install prefix,
+# set it to live under build so we don't inadvertently pollute /usr/local
+IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  SET(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "default install path" FORCE)
+ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+
+SET (HEADER_INCLUDE
+  Qsci/qsciscintilla.h
+  Qsci/qsciscintillabase.h
+  Qsci/qsciabstractapis.h
+  Qsci/qsciapis.h
+  Qsci/qscilexer.h
+  Qsci/qscilexercustom.h
+  Qsci/qsciglobal.h
+  Qsci/qscicommand.h
+  Qsci/qscidocument.h
+)
+
+SET(HEADERS_TO_MOC
+    #Qsci/qscilexerbash.h
+    #Qsci/qscilexerbatch.h
+    #Qsci/qscilexercmake.h
+    #Qsci/qscilexercpp.h
+    #Qsci/qscilexercsharp.h
+    #Qsci/qscilexercss.h
+    #Qsci/qscilexerd.h
+    #Qsci/qscilexerdiff.h
+    #Qsci/qscilexerfortran.h
+    #Qsci/qscilexerfortran77.h
+    #Qsci/qscilexerhtml.h
+    #Qsci/qscilexeridl.h
+    #Qsci/qscilexerjava.h
+    #Qsci/qscilexerjavascript.h
+    #Qsci/qscilexerlua.h
+    #Qsci/qscilexermakefile.h
+    #Qsci/qscilexermatlab.h
+    #Qsci/qscilexeroctave.h
+    #Qsci/qscilexerpascal.h
+    #Qsci/qscilexerperl.h
+    #Qsci/qscilexerpostscript.h
+    #Qsci/qscilexerpov.h
+    #Qsci/qscilexerproperties.h
+    #Qsci/qscilexerpython.h
+    #Qsci/qscilexerruby.h
+    #Qsci/qscilexerspice.h
+    #Qsci/qscilexersql.h
+    #Qsci/qscilexertcl.h
+    #Qsci/qscilexertex.h
+    #Qsci/qscilexerverilog.h
+    #Qsci/qscilexervhdl.h
+    #Qsci/qscilexerxml.h
+    #Qsci/qscilexeryaml.h
+    #Qsci/qscimacro.h
     SciClasses.h
     ScintillaQt.h
 )
-set(HEADERS
+SET(HEADERS
     ../src/XPM.h
-    ./Qsci/qsciglobal.h
-    ./Qsci/qscicommand.h
-    ./Qsci/qscicommandset.h
-    ./Qsci/qscidocument.h
-    ./Qsci/qsciprinter.h
-    ./Qsci/qscistyle.h
+    Qsci/qsciglobal.h
+    Qsci/qscicommand.h
+    Qsci/qscicommandset.h
+    Qsci/qscidocument.h
+    Qsci/qsciprinter.h
+    Qsci/qscistyle.h
     ../src/ViewStyle.h
-    ./Qsci/qscistyledtext.h
+    Qsci/qscistyledtext.h
     ListBoxQt.h
     SciNamespace.h    
     ../include/ILexer.h
@@ -117,7 +141,7 @@ set(HEADERS
     ../src/Selection.h
     ../src/SplitVector.h
 )
-set(SOURCES
+SET(SOURCES
     qsciscintilla.cpp
     qsciscintillabase.cpp
     qsciabstractapis.cpp
@@ -307,7 +331,7 @@ set(SOURCES
     ../src/XPM.cpp
 )
 FIND_PACKAGE(Qt5LinguistTools)
-QT5_WRAP_CPP(MOC_FILES ${HEADERS_TO_MOC})
+QT5_WRAP_CPP(MOC_FILES ${HEADERS_TO_MOC} ${HEADER_INCLUDE})
 SOURCE_GROUP("Generated" FILES ${MOC_FILES})
 SOURCE_GROUP(sources FILES ${HEADERS} ${SOURCES} )
 SET(TS_FILES qscintilla_cs.ts qscintilla_de.ts qscintilla_es.ts qscintilla_fr.ts qscintilla_pt_br.ts)
@@ -315,5 +339,11 @@ QT5_ADD_TRANSLATION(QM_FILES ${TS_FILES})
 SOURCE_GROUP("translations" FILES ${TS_FILES})
 SOURCE_GROUP("qm-files" FILES ${QM_FILES})
 
-ADD_LIBRARY(qscintilla2 STATIC ${MOC_FILES} ${HEADERS} ${SOURCES} ${QM_FILES})
-TARGET_LINK_LIBRARIES(qscintilla2 ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES})
+ADD_LIBRARY(${PROJECT_NAME} STATIC ${MOC_FILES} ${HEADERS} ${SOURCES} ${QM_FILES})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES})
+
+SET(TARGET_INSTALL_DESTINATION lib)
+SET(HEADERS_INSTALL_DESTINATION include)
+
+INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${TARGET_INSTALL_DESTINATION} COMPONENT APPLICATIONS)
+INSTALL_FILES_HIERARCHY(FILES ${HEADER_INCLUDE} DESTINATION ${HEADERS_INSTALL_DESTINATION})
