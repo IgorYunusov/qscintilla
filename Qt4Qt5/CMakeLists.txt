@@ -1,12 +1,14 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 CMAKE_POLICY(SET CMP0048 OLD)
 PROJECT(qscintilla2)
-INCLUDE(../../../../cmake/integrate-qt.cmake)
-DETECT_QT()
 
-SET(QT_COMPONENTS_TO_USE Qt5Widgets Qt5PrintSupport)
+FIND_PACKAGE(Qt5Core REQUIRED)
+include_directories(${Qt5Core_INCLUDES})
+add_definitions(${Qt5Core_DEFINITIONS})
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+include_directories(${Qt5Widgets_INCLUDES})
+add_definitions(${Qt5Widgets_DEFINITIONS})
 
-INTEGRATE_QT(${QT_COMPONENTS_TO_USE})
 INCLUDE_DIRECTORIES(. ../include ../lexlib ../src)
 ADD_DEFINITIONS(-DQSCINTILLA_MAKE_DLL -DSCINTILLA_QT -DSCI_LEXER -DFASTO)
 
@@ -304,14 +306,14 @@ set(SOURCES
     ../src/ViewStyle.cpp
     ../src/XPM.cpp
 )
+FIND_PACKAGE(Qt5LinguistTools)
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TO_MOC})
 SOURCE_GROUP("Generated" FILES ${MOC_FILES})
 SOURCE_GROUP(sources FILES ${HEADERS} ${SOURCES} )
-SET(TS_FILES qscintilla_cs.ts qscintilla_de.ts qscintilla_es.ts qscintilla_fr.ts qscintilla_pt_br.ts qscintilla_ru.ts)
-#QTX_ADD_TRANSLATION(QM_FILES ${TS_FILES})
-#source_group("translations" FILES ${TS_FILES})
-#source_group("qm-files" FILES ${QM_FILES})
+SET(TS_FILES qscintilla_cs.ts qscintilla_de.ts qscintilla_es.ts qscintilla_fr.ts qscintilla_pt_br.ts)
+QT5_ADD_TRANSLATION(QM_FILES ${TS_FILES})
+SOURCE_GROUP("translations" FILES ${TS_FILES})
+SOURCE_GROUP("qm-files" FILES ${QM_FILES})
 
-ADD_LIBRARY(qscintilla2 STATIC ${MOC_FILES} ${HEADERS} ${SOURCES}
-       # ${QM_FILES}
-)
+ADD_LIBRARY(qscintilla2 STATIC ${MOC_FILES} ${HEADERS} ${SOURCES} ${QM_FILES})
+TARGET_LINK_LIBRARIES(qscintilla2 ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES})
