@@ -45,6 +45,7 @@ SET(HEADER_INCLUDE
   Qsci/qsciglobal.h
   Qsci/qscicommand.h
   Qsci/qscidocument.h
+  Qsci/qscilexerjson.h
 )
 
 SET(HEADERS
