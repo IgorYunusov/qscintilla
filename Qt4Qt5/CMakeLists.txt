@@ -160,6 +160,7 @@ SET(SOURCES
     #qscilexercpp.cpp
     #qscilexercsharp.cpp
     #qscilexercss.cpp
+    qscilexerjson.cpp
     qscilexercustom.cpp
     #qscilexerd.cpp
     #qscilexerdiff.cpp
