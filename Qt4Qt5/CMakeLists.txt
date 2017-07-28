@@ -293,6 +293,8 @@ SET(SOURCES
     ../lexers/LexHex.cpp
     ../lexers/LexRegistry.cpp
     ../lexers/LexDMAP.cpp
+    ../lexers/LexJSON.cpp
+    ../lexers/LexEDIFACT.cpp
     ../lexlib/Accessor.cpp
     ../lexlib/CharacterCategory.cpp
     ../lexlib/CharacterSet.cpp
